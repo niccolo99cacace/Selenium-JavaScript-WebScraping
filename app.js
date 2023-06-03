@@ -1,13 +1,21 @@
 const { Builder, By, Key, until } = require("selenium-webdriver");
 const chrome = require("selenium-webdriver/chrome");
 const path = require("path");
+const readline = require('readline');
+
+
+
+// Recupera l'argomento della linea di comando
+//es. npm start "scarpe nike"
+let searchQuery = process.argv[2];
+
 
 (async () => {
   let driver = await new Builder()
     .forBrowser("chrome")
     .setChromeService(
       new chrome.ServiceBuilder(
-        "C:\\Users\\napol\\Documents\\BrowserDriversSelenium\\chromeDriver\\chromedriver.exe"
+        "C:\\Users\\Administrator\\Documents\\Selenium-BrowserDriver\\ChromeDriver\\chromedriver.exe"
       )
     )
     .build();
@@ -15,7 +23,7 @@ const path = require("path");
     await driver.get("https://www.zalando.it/");
     await driver.manage().window().maximize();
     const searchBox = await driver.findElement(By.name("q")); // 'q' è il nome generico per il campo di ricerca.
-    await searchBox.sendKeys("scarpe da calcio"); //ciò che scrivo nel campo di ricerca
+    await searchBox.sendKeys(searchQuery); //ciò che scrivo nel campo di ricerca
     await searchBox.sendKeys(Key.RETURN); //simulo "Enter"
 
     await new Promise(resolve => setTimeout(resolve, 5000));
@@ -49,26 +57,30 @@ const path = require("path");
     for (let product of products) {
 
       
-      let name = await product.findElements(By.css('.KxHAYs.lystZ1.FxZV-M._4F506m.ZkIJC-.r9BRio.qXofat.EKabf7.nBq1-s._2MyPg2'));
+      let productName = await product.findElements(By.css('.KxHAYs.lystZ1.FxZV-M._4F506m.ZkIJC-.r9BRio.qXofat.EKabf7.nBq1-s._2MyPg2'));
 
       
-      if(name.length === 0)  console.log("NULLA");
+      if(productName.length === 0)  console.log("NULLA");
 
       else {   
 
-        let price = await product.findElements(By.css('.KxHAYs.lystZ1.dgII7d._3SrjVh'));
-        let brand = await product.findElements(By.css('._6zR8Lt.lystZ1.FxZV-M._4F506m.ZkIJC-.r9BRio.qXofat.EKabf7.nBq1-s._2MyPg2')); 
+        let productPrice = await product.findElements(By.css('.KxHAYs.lystZ1.dgII7d._3SrjVh'));
+        let productBrand = await product.findElements(By.css('._6zR8Lt.lystZ1.FxZV-M._4F506m.ZkIJC-.r9BRio.qXofat.EKabf7.nBq1-s._2MyPg2')); 
+        
+        //"calcolo" percentuale 
+        let str = await product.findElements(By.css(".KxHAYs.goVnUa.FxZV-M._3SrjVh.r9BRio"));
+        let stringa = await str[0].getText();
+        let index = stringa.indexOf('%');
+        let discountPercentage = stringa.substring(index - 2, index+1);
 
 
-        let productName = await name[0].getText();
-        let productPrice = await price[0].getText();
-        let productBrand = await brand[0].getText();
-        productData.push({productName,productPrice,productBrand}); 
+        let name = await productName[0].getText();
+        let price = await productPrice[0].getText();
+        let brand = await productBrand[0].getText();
+        productData.push({name,price,brand,discountPercentage}); 
         x++;
       }
 
-      // Aggiungi le informazioni del prodotto all'array
-      //productData.push({name, price});
 
 
       
