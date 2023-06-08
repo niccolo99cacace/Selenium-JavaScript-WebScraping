@@ -1,19 +1,25 @@
 const scrapingProdottiZalando = require("./scraping_zalando")
-
+const scrapingImg = require("./scraping_zalando")
 
 
 //chiamata alla funzione di scraping
 
+
 /*
-scrapingProdottiZalando.scrapingProdottiZalando('nike',20)
+scrapingProdottiZalando.scrapingProdottiZalando('pig',40)
 .then(result => {
-  console.log(result.productData); // stampa il numero di articoli
-  console.log("\n Numero prodotti trovati : ",result.numberProductsFound); // stampa l'array di dati del prodotto
+  console.log(result.productData); 
+  console.log(result.numberProductsFound); 
 })
   .catch(error => console.error(error));
 
-  */
+ */
 
+
+
+
+
+ 
 
   
   const TelegramBot = require('node-telegram-bot-api');
@@ -25,6 +31,10 @@ scrapingProdottiZalando.scrapingProdottiZalando('nike',20)
   bot.onText(/\/start/, (msg) => {
     const chatId = msg.chat.id;
     bot.sendMessage(chatId, 'Benvenuto nel Zalando bot! \n Strumento indispensabile per trovare nuovi sconti');
+
+    const url = 'https://img01.ztat.net/article/spp-media-p1/553c5bd966ed3085afe815aed8fae88a/e3e7c98e73a1467a866815e8ffc1315e.jpg?imwidth=300';
+
+    bot.sendPhoto(chatId, url);
   });
   
   bot.on('message', async (msg) => {
@@ -48,13 +58,14 @@ scrapingProdottiZalando.scrapingProdottiZalando('nike',20)
         let x = 0;
         for(let prodotto of prodotti){
         bot.sendMessage(chatId, `${prodotto}`);
-        
+
+
         x++;
-        await new Promise((resolve) => setTimeout(resolve, 300));
+        await new Promise((resolve) => setTimeout(resolve, 500));
 
         bot.sendMessage(chatId, `${x}`);
 
-        await new Promise((resolve) => setTimeout(resolve, 300));
+        await new Promise((resolve) => setTimeout(resolve, 500));
       }
 
       } catch (error) {
@@ -69,6 +80,12 @@ scrapingProdottiZalando.scrapingProdottiZalando('nike',20)
   bot.on('polling_error', (error) => {
     console.log(error);
   });
+
+
+
+
+
+
 
 
 

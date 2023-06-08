@@ -78,12 +78,14 @@ exports.scrapingProdottiZalando  = async (productType,discountPercentageValue) =
         )
       );
 
-      if (productName.length === 0) continue;
+      let str = await product.findElements(
+        By.css(".KxHAYs.goVnUa.FxZV-M._3SrjVh.r9BRio")
+      );
+
+      if (productName.length === 0 || str.length === 0) continue;
       else {
-        let str = await product.findElement(
-          By.css(".KxHAYs.goVnUa.FxZV-M._3SrjVh.r9BRio")
-        );
-        let stringaPercentage = await str.getText();
+        
+        let stringaPercentage = await str[0].getText();
         let index = stringaPercentage.indexOf("%");
         let discountPercentageString = stringaPercentage.substring(
           index - 2,
@@ -110,12 +112,16 @@ exports.scrapingProdottiZalando  = async (productType,discountPercentageValue) =
           )
         );
 
+        let productImg = await product.findElement(By.css("img.KxHAYs.lystZ1.FxZV-M._2Pvyxl.JT3_zV.EKabf7.mo6ZnF._1RurXL.mo6ZnF._7ZONEy"));
+
+
         let name = await productName[0].getText();
         let price = await productPrice.getText();
         let brand = await productBrand.getText();
-        let Url = await porductUrl.getAttribute('href');
+        let url = await porductUrl.getAttribute('href');
+        let img = await productImg.getAttribute('src');
 
-        productData.push({ name, price, brand, discountPercentageInt, Url });
+        productData.push({ name, price, brand, discountPercentageInt, url, img });
 
         numberProductsFound++;
       }
@@ -128,5 +134,4 @@ exports.scrapingProdottiZalando  = async (productType,discountPercentageValue) =
     return null;
   }
 }
-
 
