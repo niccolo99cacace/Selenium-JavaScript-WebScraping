@@ -34,7 +34,9 @@ scrapingProdottiZalando.scrapingProdottiZalando('pig',40)
 
     const url = 'https://img01.ztat.net/article/spp-media-p1/553c5bd966ed3085afe815aed8fae88a/e3e7c98e73a1467a866815e8ffc1315e.jpg?imwidth=300';
 
-    bot.sendPhoto(chatId, url);
+    const caption = `${chatId} \n hahahaha`;
+
+    bot.sendPhoto(chatId, url, {caption});
   });
   
   bot.on('message', async (msg) => {
@@ -45,27 +47,26 @@ scrapingProdottiZalando.scrapingProdottiZalando('pig',40)
   
       try {
         const result = await scrapingProdottiZalando.scrapingProdottiZalando(productName, 20);
-      //  console.log(result.productData);
-       // console.log("\n Numero prodotti trovati : ", result.numberProductsFound);
 
 
        //NOTA : map è una funzione SINCRONA (NON restituisce una Promise ma un array)
        //Aggiungere await sarebbe inutile (map è già BLOCCANTE di per sè)
-        let prodotti = result.productData.map((n) => n.name);
-        console.log(prodotti);
-        console.log(prodotti.length);
 
         let x = 0;
-        for(let prodotto of prodotti){
-        bot.sendMessage(chatId, `${prodotto}`);
+        for(let prodotto of result.productData){
+        
+          //caratteristiche del prodotto (esclusa la foto che viene mandata con prodotto.img)
+          let caption = `${prodotto.brand} \n${prodotto.name} \n${prodotto.price} \n-${prodotto.discountPercentageInt}% DISCOUNT \n${prodotto.url} \n`;
 
+          bot.sendPhoto(chatId, prodotto.img, {caption});
 
+          await new Promise((resolve) => setTimeout(resolve, 1000));
         x++;
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
         bot.sendMessage(chatId, `${x}`);
 
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
 
       } catch (error) {
